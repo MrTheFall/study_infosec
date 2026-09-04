@@ -1,0 +1,40 @@
+name: Lab 1 CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+      - name: SAST - Bandit
+        if: ${{ !cancelled() }}
+        run: bandit app.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Snyk
+        run: npm install -g snyk
+      - name: SCA - Snyk
+        if: ${{ !cancelled() }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "Добавьте секрет SNYK_TOKEN в настройках GitHub Actions"
+            exit 1
+          fi
+          snyk test --file=requirements.txt --package-manager=pip --command=python
