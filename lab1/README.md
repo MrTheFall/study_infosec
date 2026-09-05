@@ -198,3 +198,13 @@ snyk test --file=requirements.txt --package-manager=pip --command=python3
 | XSS в тексте заметки | HTML-символы экранированы |
 | SAST: Bandit | 0 замечаний |
 | SCA: Snyk | Проверены 8 зависимостей, уязвимости не найдены |
+
+## Скриншоты
+
+### Отчет шага SAST
+
+![Отчет шага SAST](images/bandit.png)
+
+### Отчет шага SCA
+
+![Отчет шага SCA](images/snyk.png)
